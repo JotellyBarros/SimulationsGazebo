@@ -1,0 +1,76 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="myfirstCamera">  
+  
+  <!-- Sensor link -->
+  <link name="cameras">
+    <inertial>
+      <mass value="1"/>
+      <inertia ixx="1" ixy="1" ixz="1" iyy="1" iyz="1" izz="1" />
+    </inertial>
+
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="file://$(find urdf_sim_tutorial)/meshes/oe14-372.dae" scale="1 1 1"/>
+      </geometry>
+    </visual>
+
+    <collision>
+      <geometry>
+        <cylinder length="1.0" radius="0.1"/>
+      </geometry>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+    </collision>
+  </link>
+
+  <!-- camera -->
+  <gazebo reference="cameras">
+    <sensor type="camera" name="camera1">
+      <update_rate>30</update_rate>
+      <camera name="head">
+        <horizontal_fov>1.57079633</horizontal_fov>
+        <image>
+          <width>640</width>
+          <height>480</height>
+          <format>R8G8B8</format>
+        </image>
+        <hfov>60</hfov>
+        <clip>
+          <near>0.1</near>
+          <far>3000</far>
+        </clip>
+        <noise>
+          <type>gaussian</type>
+          <mean>0.0</mean>
+          <stddev>0.02</stddev>
+        </noise>
+      </camera>
+
+      <plugin name="camera_controller" filename="libgazebo_ros_control.so">
+        <scale_to_hfov>true</scale_to_hfov>
+        <baseline>0.12</baseline>
+        <alwaysOn>true</alwaysOn>
+        <updateRate>0.0</updateRate>
+        <cameraName>myfirstCamera/camera1</cameraName>
+        <cameraInfoTopicName>camera_info</cameraInfoTopicName>        
+        <frameName>cameras</frameName>
+
+        <focal_length>320</focal_length>
+        <distortion_k1>0.00000001</distortion_k1>
+        <distortion_k2>0.00000001</distortion_k2>
+        <distortion_k3>0.00000001</distortion_k3>
+        <distortion_t1>0.00000001</distortion_t1>
+        <distortion_t2>0.00000001</distortion_t2>
+
+        <!-- required for ros depth cam -->
+        <imageTopicName>image_raw</imageTopicName>
+        <pointCloudTopicName>camera_cloud</pointCloudTopicName>
+        <depthImageTopicName>camera_depth</depthImageTopicName>
+        <depthImageCameraInfoTopicName>depth_info</depthImageCameraInfoTopicName>
+
+      </plugin>
+    </sensor>
+</gazebo>
+</robot>
+
+/gazebo
